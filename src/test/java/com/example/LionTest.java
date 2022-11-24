@@ -30,7 +30,6 @@ public class LionTest {
         return new Object[][]{
                 {"Самец", true},
                 {"Самка", false},
-                {"Неизвестно", false},
         };
     }
 
@@ -39,43 +38,34 @@ public class LionTest {
         MockitoAnnotations.initMocks(this);
     }
 
-    public void doesHaveManeUnknownSexReturnException(Exception e) {
-        assertEquals("Используйте допустимые значения пола животного - самец или самка", e.getMessage());
-    }
-
     @Test
-    public void getKittensReturn1Kitten() {
-        try {
+    public void getKittensReturn1Kitten() throws Exception {
             Lion lion = new Lion(sex, feline);
             Mockito.when(feline.getKittens()).thenReturn(1);
             int actualResult = lion.getKittens();
             assertEquals("Результат не совпал", 1, actualResult);
-        } catch (Exception e) {
-            doesHaveManeUnknownSexReturnException(e);
         }
-    }
 
     @Test
-    public void doesHaveMane() {
-        try {
+    public void doesHaveMane() throws Exception {
             Lion lion = new Lion(sex, feline);
             assertEquals("Результат отличается от ожидаемого", hasMane, lion.doesHaveMane());
-        } catch (Exception e) {
-            doesHaveManeUnknownSexReturnException(e);
-        }
     }
 
     @Test
-    public void getFood() {
-        try {
+    public void unknownSexReturnException() {
+        Exception thrown = assertThrows(
+                Exception.class, () ->new Lion("Неизвестно", feline));
+        assertEquals("Результат отличается от ожидаемого", "Используйте допустимые значения пола животного - самец или самка", thrown.getMessage());
+    }
+
+    @Test
+    public void getFood() throws Exception {
             Lion lion = new Lion(sex, feline);
             List<String> expectedResult = List.of("Животные", "Птицы", "Рыба");
             Mockito.when(feline.getFood("Хищник")).thenReturn(expectedResult);
             List<String> actualResult = lion.getFood();
             assertEquals("Результат не совпал", expectedResult, actualResult);
-        } catch (Exception e) {
-            doesHaveManeUnknownSexReturnException(e);
-        }
     }
 
 }
